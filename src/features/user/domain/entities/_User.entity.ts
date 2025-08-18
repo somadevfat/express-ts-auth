@@ -1,3 +1,4 @@
+// 使ってないです。インメモリのときに使っていたので残してます。
 export interface User {
   id: number;
   email: string;
