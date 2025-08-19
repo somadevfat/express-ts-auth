@@ -2,13 +2,18 @@ import express from "express";
 import { AuthController } from "../controllers/Auth.controller";
 import { PrismaUserRepository } from "../../user/infrastructure/repositories/User.repository.prisma";
 import { AuthService } from "../services/Auth.service";
+import { PrismaTokenBlocklistRepository } from "../infrastructure/repositories/TokenBlocklist.prisma.repository";
+import { isTokenBlocked } from "../../../middlewares/isBlockList";
 const router = express.Router();
 
-// DIコンテナがないため手動で依存性を注入
 const userRepository = new PrismaUserRepository();
-const authService = new AuthService(userRepository);
+const tokenBlocklistRepository = new PrismaTokenBlocklistRepository();
+const authService = new AuthService(userRepository, tokenBlocklistRepository);
 const authController = new AuthController(authService);
 
-router.post("/signin", authController.signin.bind(authController));
+router.post("/signin", isTokenBlocked, authController.signin.bind(authController));
+router.post("/admin/signin", isTokenBlocked, authController.adminSignin.bind(authController));
+router.post("/logout", isTokenBlocked, authController.logout.bind(authController));
+
 
 export default router;
