@@ -11,8 +11,8 @@ const tokenBlocklistRepository = new PrismaTokenBlocklistRepository();
 const authService = new AuthService(userRepository, tokenBlocklistRepository);
 const authController = new AuthController(authService);
 
-router.post("/signin", isTokenBlocked, authController.signin.bind(authController));
-router.post("/admin/signin", isTokenBlocked, authController.adminSignin.bind(authController));
+router.post("/signin", authController.signin.bind(authController));
+router.post("/admin/signin", authController.adminSignin.bind(authController));
 router.post("/logout", isTokenBlocked, authController.logout.bind(authController));
 
 
