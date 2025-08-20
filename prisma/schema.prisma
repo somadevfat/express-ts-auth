@@ -22,40 +22,31 @@ model User {
   isAdmin   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  cart      Cart?
+  carts     Cart[]
 }
 
 model Item {
-  id          Int        @id @default(autoincrement())
-  name        String
-  price       Int
-  description String
-  imageUrl    String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  cartItems   CartItem[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Int
+  content   String
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  carts     Cart[]
 }
 
 model Cart {
-  id        Int        @id @default(autoincrement())
-  userId    Int        @unique
-  user      User       @relation(fields: [userId], references: [id])
-  items     CartItem[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-}
-
-model CartItem {
   id        Int      @id @default(autoincrement())
-  cartId    Int
-  cart      Cart     @relation(fields: [cartId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
   itemId    Int
   item      Item     @relation(fields: [itemId], references: [id])
   quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([cartId, itemId])
+  @@unique([userId, itemId])
 }
 
 model TokenBlocklist {

@@ -6,16 +6,19 @@ import dotenv from "dotenv";
 import userRoutes from "./features/user/routes/User.routes";
 import authRoutes from "./features/auth/routes/Auth.routes";
 import { errorHandler } from "./middlewares/errorHandler";
+import { itemRoutes } from "./features/item/routes/Item.routes"; // 追加
 
 dotenv.config();
 
-const app = express();
+export const app = express();
 
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+// ルーターの登録
 app.use("/users", userRoutes);
+app.use("/items", itemRoutes); // 追加
 app.use("/auth", authRoutes);
 
 // 仮のルートをUserルートに置き換える
