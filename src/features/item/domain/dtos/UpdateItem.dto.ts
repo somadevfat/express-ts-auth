@@ -14,7 +14,8 @@ export const UpdateItemSchema = z.object({
     .positive("Price must be a positive integer")
     .optional(),
   content: z.string().min(1, "Content is required").optional(),
-  image: z.string().url("Image URL must be a valid URL").optional(),
+  image: z.string().regex(/^data:image\/[a-zA-Z]+;base64,/, "data URI形式の画像を指定してください"),
+  extension: z.enum(["png", "jpg", "jpeg", "webp"]),
 });
 
 export type UpdateItemDto = z.infer<typeof UpdateItemSchema>;

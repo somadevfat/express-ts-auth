@@ -13,7 +13,7 @@ const authController = new AuthController(authService);
 
 router.post("/signin", authController.signin.bind(authController));
 router.post("/admin/signin", authController.adminSignin.bind(authController));
-router.post("/logout", isTokenBlocked, authController.logout.bind(authController));
+router.post("/signout", isTokenBlocked, authController.logout.bind(authController));
 
 
 export default router;

@@ -1,45 +1,40 @@
-# バックエンド実装 TODO
+# TODO (OpenAPI優先)
 
-## 概要
-バックエンド仕様書（`memo/requirements/backend_spec.md`）に基づいて、実装が必要な機能を管理します。
+## 概要サマリー
+- OpenAPIをソースオブトゥルースとして整合させる。
+- 重要差分:
+  - ルーティング: `GET /my/user` は `/api` 直下に配置すべき。実装は `/api/users/my/user` になっている。
+  - Users: `/my/user` は `findMe` を返すべき。実装は `findById` を呼んでいる。
+  - Items: POSTボディ/レスポンス/削除コード/一覧ページネーションが仕様と不一致。
+  - Carts: POSTボディ（配列）/レスポンス（`item`同梱）/不要な追加エンドポイントが仕様と不一致。
+  - OpenAPI側の誤記: `ItemResponse.yml` 構文、`ItemsResponse.yml` の title、`ItemId.yml` の name/説明、`Item.yml` required の綴り。
 
-## 実装済み機能
-- ✅ ユーザー認証 (`POST /auth/signin`)
-- ✅ ユーザー管理 (`GET, POST, PUT, DELETE /users`)
-- ✅ JWTによるAPIエンドポイントの保護 (`verifyAuthToken` ミドルウェア)
-- ✅ 管理者権限チェック (`isAdmin` ミドルウェア)
-- ✅ クリーンアーキテクチャの基本構造 (`features/user`, `features/auth`)
-- ✅ エラーハンドリングの基本構造
+## 実装側の修正（仕様に合わせる）
+1. ルーティング統合[x]
+   - `app.ts`: `userRoutes` のマウントを見直し、`/api/my/user` を正しい位置へ。
+   - `User.routes.ts`: `GET /my/user` は `userController.findMe` に差し替え。
+2. Items API []
+   - `POST /items`: DTO/コントローラを `base64`+`extension` 受付に変更。201→200に統一。
+   - `GET /items`: サービス/レスポンスをページネーション形式 `{ ...pagination, data: Item[] }` に変更。
+   - `GET /items/{itemId}`: 返却形状は `Item` 単体（仕様修正も併行）。
+   - `DELETE /items/{itemId}`: 200へ揃える（またはOpenAPIを204へ変更）。
+3. Carts API []
+   - `POST /carts`: ボディを配列 `[{ item_id, quantity }]` 受付に変更し、複数作成に対応。
+   - `GET /carts`: リポジトリで `include: { item: true }` を追加し、`item` をネストして返却。
+   - 仕様にない `GET /carts/:id`, `PUT /carts/:id` は削除するか、必要ならOpenAPIへ追記（今回は削除）。
 
-## 未実装機能（実装優先度順）
+## OpenAPIドキュメント側の修正（誤記訂正）
+1. `docs/responses/items/ItemResponse.yml`: `properties` 下の `$ref` を正しい構造へ修正。
+2. `docs/responses/items/ItemsResponse.yml`: `title` を `ItemsResponse` に修正。
+3. `docs/params/ItemId.yml`: `name` を `itemId` に、説明を「商品ID」に修正。
+4. `docs/schemas/models/Item.yml`: required の `contents` を `content` に修正。
 
-### 1. データベーススキーマ拡張 (最優先)
-- [x] `prisma/schema.prisma`: `Item` モデルを追加する (商品名, 価格, 説明, 画像URLなど)
-- [x] `prisma/schema.prisma`: `Cart`, `CartItem` モデルを追加し、`User` および `Item` とのリレーションを設定する
-- [x] `prisma migrate dev` を実行し、データベースに変更を適用する
+## メモ（認証/認可）
+- OpenAPIはグローバルでBearerを要求。`/carts` の管理者制約は仕様にないため、実装の `isAdmin` は削除済み（仕様に合わせて整合）。
 
-### 2. 認証機能の拡張
-- [x] `POST /auth/admin/signin`: 管理者ログイン用のエンドポイントを実装する
-- [x] `POST /auth/signout`: ログアウト機能を実装する
-
-### 3. 商品管理機能 (要管理者権限)
-- [ ] `Item` のクリーンアーキテクチャ（Domain, Application, Infrastructure）の基本構造を作成する
-- [ ] `POST /items`: 商品を作成する
-- [ ] `GET /items`: 商品一覧を取得する (ページネーション、フィルタ機能含む)
-- [ ] `GET /items/{itemId}`: 商品詳細を取得する
-- [ ] `PUT /items/{itemId}`: 商品情報を更新する
-- [ ] `DELETE /items/{itemId}`: 商品を削除する
-
-### 4. カート管理機能 (要ユーザー認証)
-- [ ] `Cart` のクリーンアーキテクチャの基本構造を作成する
-- [ ] `GET /carts`: ログインユーザーのカート情報を取得する
-- [ ] `POST /carts`: カートに商品を追加する
-- [ ] `DELETE /carts/items/{itemId}`: カートから商品を削除する
-
-### 5. マイページ機能 (要ユーザー認証)
-- [x] `GET /my/user`: ログインしているユーザー自身の情報を取得する
-
-### 6. 品質向上タスク (低優先度)
-- [ ] 各エンドポイントの入力値検証を強化する (zodなど)
-- [ ] 単体テスト・統合テストを拡充する
-- [ ] セキュリティ対策を強化する (CSRF, レート制限など)
+## 実行順（作業手順）
+1. Users: ルート位置/ハンドラ差替え
+2. Items: DTO/Controller/Serviceの入出力修正とHTTPコード調整
+3. Carts: DTO/Controller/Repositoryの入出力修正と余剰エンドポイント削除
+4. OpenAPIの誤記修正
+5. Swagger UIで目視確認、最低限の結合テスト実行

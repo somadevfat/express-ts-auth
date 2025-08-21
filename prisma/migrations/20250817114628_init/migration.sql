@@ -15,9 +15,9 @@ CREATE TABLE "public"."User" (
 CREATE UNIQUE INDEX "User_email_key" ON "public"."User"("email");
 
 -- Insert initial data
--- Admin user (password: AdminPass123)
+-- Admin user (password: pass)
 INSERT INTO "public"."User" ("name", "email", "password", "isAdmin", "createdAt", "updatedAt") VALUES
-('Admin User', 'admin@example.com', '$2b$10$PYhNwthIgvO4ZJryIvH.geUT/1FPRkJgELzhDYUr4TY0qGQyFS7bq', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+('Admin User', 'admin@lh.sandbox', '$2b$10$sfEHBSNtaYrFbDVpVWHAmeBKbhjVL/Ry62G59nNa9Gyc/LmubsAAe', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Sample users (password: UserPass123)
 INSERT INTO "public"."User" ("name", "email", "password", "isAdmin", "createdAt", "updatedAt") VALUES

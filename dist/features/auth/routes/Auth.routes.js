@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const Auth_controller_1 = require("../controllers/Auth.controller");
+const User_repository_prisma_1 = require("../../user/infrastructure/repositories/User.repository.prisma");
+const Auth_service_1 = require("../services/Auth.service");
+const TokenBlocklist_prisma_repository_1 = require("../infrastructure/repositories/TokenBlocklist.prisma.repository");
+const isBlockList_1 = require("../../../middlewares/isBlockList");
+const router = express_1.default.Router();
+const userRepository = new User_repository_prisma_1.PrismaUserRepository();
+const tokenBlocklistRepository = new TokenBlocklist_prisma_repository_1.PrismaTokenBlocklistRepository();
+const authService = new Auth_service_1.AuthService(userRepository, tokenBlocklistRepository);
+const authController = new Auth_controller_1.AuthController(authService);
+router.post("/signin", authController.signin.bind(authController));
+router.post("/admin/signin", authController.adminSignin.bind(authController));
+router.post("/logout", isBlockList_1.isTokenBlocked, authController.logout.bind(authController));
+exports.default = router;

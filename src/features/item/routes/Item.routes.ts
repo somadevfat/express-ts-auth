@@ -16,7 +16,6 @@ const itemController = new ItemController(itemService);
 // エンドポイントとコントローラーのメソッドを紐付け
 itemRoutes.get("/", itemController.getAllItems);
 itemRoutes.get("/:id", itemController.getItemById);
-
 itemRoutes.post(
   "/",
   isTokenBlocked,

@@ -31,6 +31,7 @@ model Item {
   price     Int
   content   String
   image     String?
+  extension String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   carts     Cart[]
@@ -45,7 +46,8 @@ model Cart {
   quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  createdBy Int      @default(1)
+  updatedBy Int      @default(1)
   @@unique([userId, itemId])
 }
 

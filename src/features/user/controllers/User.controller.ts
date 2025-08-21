@@ -41,11 +41,20 @@ export class UserController {
   // ログイン情報確認
   async findMe(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = await this.userService.findMe();
-      if (!user) {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(404).json({ message: "認証情報が見つかりません" });
+      }
+      const realUser = await this.userService.findById(Number(userId));
+      if (!realUser) {
         return res.status(404).json({ message: "ユーザーが見つかりません" });
       }
-      res.json(user);
+      const me = {
+        id: realUser.id,
+        name: realUser.name,
+        email: realUser.email,
+      };
+      res.json(me);
     } catch (error) {
       next(error);
     }
