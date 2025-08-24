@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { UserService } from "../services/User.service";
-import { safeValidateCreateUser } from "../domain/dtos/CreateUser.dto";
-import { safeValidateUpdateUser } from "../domain/dtos/UpdateUser.dto";
 
 export class UserController {
   constructor(private readonly userService: UserService) { }
@@ -9,22 +7,10 @@ export class UserController {
   // ユーザーを作成する
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      // 1. リクエストボディの検証
-      const validationResult = safeValidateCreateUser(req.body);
-
-      if (!validationResult.success) {
-        // バリデーションエラー
-        return res.status(422).json({
-          message: "入力データの検証に失敗しました",
-          errors: validationResult.error.flatten(),
-        });
-      }
-
-      // 2. ユーザー作成処理の実行
-      const user = await this.userService.createUser(validationResult.data);
+      const user = await this.userService.createUser(req.body);
       res.status(201).json(user);
     } catch (error) {
-      next(error);
+      next();
     }
   }
 
@@ -34,7 +20,7 @@ export class UserController {
       const user = await this.userService.findById(Number(req.params.id));
       res.json(user);
     } catch (error) {
-      next(error);
+      next();
     }
   }
 
@@ -56,7 +42,7 @@ export class UserController {
       };
       res.json(me);
     } catch (error) {
-      next(error);
+      next();
     }
   }
 
@@ -66,32 +52,21 @@ export class UserController {
       const user = await this.userService.findByEmail(req.params.email);
       res.json(user);
     } catch (error) {
-      next(error);
+      next();
     }
   }
 
   // ユーザーを更新する
   async update(req: Request, res: Response, next: NextFunction) {
     try {
-      // 1. リクエストボディの検証
-      const validationResult = safeValidateUpdateUser(req.body);
-
-      if (!validationResult.success) {
-        // バリデーションエラー
-        return res.status(422).json({
-          message: "入力データの検証に失敗しました",
-          errors: validationResult.error.flatten(),
-        });
-      }
-
       // 2. ユーザー更新処理の実行
       const updatedUser = await this.userService.update(
         Number(req.params.id),
-        validationResult.data
+        req.body
       );
       res.json(updatedUser);
     } catch (error) {
-      next(error);
+      next();
     }
   }
 
@@ -101,7 +76,7 @@ export class UserController {
       await this.userService.delete(Number(req.params.id));
       res.status(204).send();
     } catch (error) {
-      next(error);
+      next();
     }
   }
 
@@ -111,7 +86,7 @@ export class UserController {
       const users = await this.userService.findAll();
       res.json(users);
     } catch (error) {
-      next(error);
+      next();
     }
   }
 }

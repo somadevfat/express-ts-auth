@@ -5,6 +5,7 @@ import { UserService } from "../services/User.service";
 import { PrismaUserRepository } from "../infrastructure/repositories/User.repository.prisma";
 import { verifyAuthToken } from "../../../middlewares/verifyAuthToken";
 import { isTokenBlocked } from "../../../middlewares/isBlockList";
+import { validateCreateUser } from "../middlewares/validation.middlewere";
 // ユーザーリポジトリのインスタンスを作成
 const router = Router();
 
