@@ -30,7 +30,7 @@ const loadOpenApiSpec = () => {
     const spec = JSON.parse(specContent);
 
     // サーバーURLを現在のポートに合わせて更新
-    spec.servers[0].variables.server.default = `http://localhost:${process.env.PORT || 3000}/api`;
+    spec.servers[0].variables.server.default = `http://localhost:${process.env.PORT || 8080}/api`;
 
     return spec;
   } catch (error) {
