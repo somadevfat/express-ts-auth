@@ -1,8 +1,8 @@
 import prisma from "../../../../config/prisma.config";
 import { Item } from "../../../../generated/prisma";
 import { ItemRepository } from "../../repositories/Item.repository";
-import { CreateItemDTO } from "../../repositories/Item.repository";
 import { ItemQueryParams, ItemWhereConditions } from "../../domain/types/ItemQueryParams";
+import { CreateItemDTO } from "../../repositories/Item.repository";
 
 export class PrismaItemRepository implements ItemRepository {
   async findAll(): Promise<Item[]> {
@@ -21,8 +21,8 @@ export class PrismaItemRepository implements ItemRepository {
     return prisma.item.create({
       data: {
         name: props.name,
-        content: props.content,
         price: props.price,
+        content: props.content,
         image: props.image,
       },
     });

@@ -18,4 +18,11 @@ export class PrismaTokenBlocklistRepository implements TokenBlocklistRepository 
     });
     return tokenBlocklist !== null;
   }
+  async deleteToken(token: string): Promise<void> {
+    await prisma.tokenBlocklist.deleteMany({
+      where: {
+        token,
+      },
+    });
+  }
 }

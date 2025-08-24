@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import { ItemService } from "../services/Item.service";
-import { safeValidateCreateItem } from "../domain/dtos/CreateItem.dto";
-import { safeValidateUpdateItem } from "../domain/dtos/UpdateItem.dto";
 import { BadRequestError } from "@/utils/errors/CustomError";
 import { ItemQueryParams } from "../domain/types/ItemQueryParams";
 
@@ -9,14 +7,7 @@ export class ItemController {
   constructor(private readonly itemService: ItemService) { }
 
   createItem = async (req: Request, res: Response): Promise<Response> => {
-    const result = safeValidateCreateItem(req.body);
-    if (!result.success) {
-      throw new BadRequestError(
-        `Invalid input: ${JSON.stringify(result.error.flatten().fieldErrors)}`
-      );
-    }
-
-    const newItem = await this.itemService.create(result.data);
+    const newItem = await this.itemService.create(req.body);
     return res.status(201).json(newItem);
   };
 
@@ -96,15 +87,7 @@ export class ItemController {
       throw new BadRequestError("Invalid item ID");
     }
 
-    const result = safeValidateUpdateItem(req.body);
-
-    if (!result.success) {
-      throw new BadRequestError(
-        `Invalid input: ${JSON.stringify(result.error.flatten().fieldErrors)}`
-      );
-    }
-
-    const updatedItem = await this.itemService.update(itemId, result.data);
+    const updatedItem = await this.itemService.update(itemId, req.body);
     return res.status(200).json(updatedItem);
   };
 

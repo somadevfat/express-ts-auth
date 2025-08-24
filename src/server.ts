@@ -1,7 +1,7 @@
 import app from "./app";
 import { initializeJwtSecret } from "./startup";
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 // アプリケーション起動時の初期化処理
 initializeJwtSecret();

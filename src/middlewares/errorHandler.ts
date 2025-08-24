@@ -15,7 +15,7 @@ export const errorHandler = (
   // Zodバリデーションエラーの処理
   if (error instanceof ZodError) {
     return res.status(422).json({
-      message: "入力データの検証に失敗しました",
+      message: "入力データのバリデーションエラー",
       errors: error.flatten(),
     });
   }

@@ -31,7 +31,6 @@ model Item {
   price     Int
   content   String
   image     String?
-  extension String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   carts     Cart[]

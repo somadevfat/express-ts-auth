@@ -1,26 +1,13 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/Auth.service";
-import { safeValidateSignin } from "../domain/dtos/Signin.dto";
-import { ZodError } from "zod";
 
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   async signin(req: Request, res: Response) {
-    // 1. リクエストボディの検証
-    const validationResult = safeValidateSignin(req.body);
-
-    if (!validationResult.success) {
-      // バリデーションエラー
-      return res.status(422).json({
-        message: "入力データの検証に失敗しました",
-        errors: validationResult.error.flatten(),
-      });
-    }
-
     try {
       // 2. 認証処理の実行
-      const token = await this.authService.signin(validationResult.data);
+      const token = await this.authService.signin(req.body);
 
       if (!token) {
         // 認証失敗
@@ -29,6 +16,7 @@ export class AuthController {
 
       // 3. 認証成功
       res.status(200).json({ token });
+      this.authService.deleteToken(token);
     } catch (error) {
       // 予期せぬエラー
       console.error("Signin error:", error);
@@ -36,19 +24,10 @@ export class AuthController {
     }
   }
   async adminSignin(req: Request, res: Response) {
-    const validationResult = safeValidateSignin(req.body);
-
-    if (!validationResult.success) {
-      // バリデーションエラー
-      return res.status(422).json({
-        message: "入力データの検証に失敗しました",
-        errors: validationResult.error.flatten(),
-      });
-    }
 
     try {
       // 2. 認証処理の実行
-      const token = await this.authService.signin(validationResult.data);
+      const token = await this.authService.signin(req.body);
 
       if (!token) {
         // 認証失敗
@@ -57,6 +36,7 @@ export class AuthController {
 
       // 3. 認証成功
       res.status(200).json({ token });
+      this.authService.deleteToken(token);
     } catch (error) {
       // 予期せぬエラー
       console.error("AdminSignin error:", error);

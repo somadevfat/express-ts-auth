@@ -1,10 +1,12 @@
 import { Router } from "express";
 import { CartController } from "../controllers/Cart.controller";
 import { CartService } from "@/features/cart/service/Cart.service";
-import { PrismaCartRepository } from "@/features/cart/infrastructure/repositories/Cart.repository";
+import { PrismaCartRepository } from "@/features/cart/infrastructure/repositories/Cart.repository.prisma";
 import { isAdmin } from "@/middlewares/isAdmin";
 import { isTokenBlocked } from "@/middlewares/isBlockList";
 import { verifyAuthToken } from "@/middlewares/verifyAuthToken";
+import { validateCreateCart, validateUpdateCart } from "../middlewares/validation.middlewere";
+
 
 const cartRoutes = Router();
 
@@ -19,15 +21,18 @@ cartRoutes.get("/:id", isTokenBlocked, verifyAuthToken, cartController.findById)
 
 cartRoutes.post(
   "/",
-  isTokenBlocked,
   verifyAuthToken,
+  isTokenBlocked,
+  validateCreateCart,
+  
   cartController.create
 );
 
 cartRoutes.put(
   "/:id",
-  isTokenBlocked,
   verifyAuthToken,
+  isTokenBlocked,
+  validateUpdateCart,
   cartController.update
 );
 
