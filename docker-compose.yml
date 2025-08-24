@@ -1,31 +1,37 @@
-version: '3'
-
+version: "3.8"
 services:
   db:
-    image: postgres:14
-    container_name: postgres_pta
-    ports:
-      - 5432:5432
-    volumes:
-      - db-store:/var/lib/postgresql/data
+    image: postgres:14-alpine
+    restart: always
     environment:
-      POSTGRES_USER: 'user'
-      POSTGRES_PASSWORD: 'postgres'
-      POSTGRES_DB: 'postgres'
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: express-tuto
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d express-tuto"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin_pta
-    ports:
-      - "8081:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
+  app:
+    build: .
+    container_name: express-app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    env_file:
+      - .env.development
+    environment:
+      NODE_ENV: "development"
+    ports:
+      - "9999:9999"
+    volumes:
+      # 画像等の永続化
+      - ./storage:/app/storage
 
 volumes:
-  db-store:
-  pgadmin-data:
+  postgres_data:

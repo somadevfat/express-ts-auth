@@ -27,11 +27,19 @@ paths:
   # ログインユーザー関連のエンドポイント
   /items:
     $ref: ./paths/items/index.yml
-  /items/{itemId}:
+  /items/{ItemId}:
     $ref: ./paths/items/itemId/index.yml
   /carts:
     $ref: ./paths/carts/index.yml
+  /carts/{cartId}:
+    $ref: ./paths/carts/cartId/index.yml
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWTトークンを入力してください
   schemas:
     User:
       $ref: ./schemas/models/User.yml
@@ -41,3 +49,7 @@ components:
       $ref: ./schemas/models/Item.yml
     Cart:
       $ref: ./schemas/models/Cart.yml
+
+# グローバルセキュリティ設定（認証が必要なエンドポイントに適用）
+security:
+  - bearerAuth: []

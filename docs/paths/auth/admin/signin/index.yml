@@ -3,6 +3,7 @@ post:
     - auth
   summary: 管理者ログイン
   description: ログインを行います。csrfのトークンを取得してから実行してください。
+  security: []  # 認証不要
   requestBody:
     description: リクエスト
     required: true
