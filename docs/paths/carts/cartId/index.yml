@@ -1,0 +1,32 @@
+put:
+  tags:
+    - carts
+  summary: カート更新
+  description: カート内の商品の数量を更新します。
+  parameters:
+    - $ref: ../../../params/ItemId.yml # cartIdとして使用
+  requestBody:
+    description: リクエスト
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../../../requests/carts/UpdateRequest.yml
+  responses:
+    '200':
+      description: '正常応答'
+      content:
+        application/json:
+          schema:
+            $ref: ../../../responses/carts/CartsResponse.yml
+delete:
+  tags:
+    - carts
+  summary: カートから商品を削除
+  description: カートから指定された商品を削除します。
+  parameters:
+    - $ref: ../../../params/ItemId.yml # cartIdとして使用
+  responses:
+    '200':
+      description: '正常応答'
+      content: {}

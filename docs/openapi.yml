@@ -27,10 +27,12 @@ paths:
   # ログインユーザー関連のエンドポイント
   /items:
     $ref: ./paths/items/index.yml
-  /items/{itemId}:
+  /items/{ItemId}:
     $ref: ./paths/items/itemId/index.yml
   /carts:
     $ref: ./paths/carts/index.yml
+  /carts/{cartId}:
+    $ref: ./paths/carts/cartId/index.yml
 components:
   securitySchemes:
     bearerAuth:
