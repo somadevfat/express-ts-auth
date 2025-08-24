@@ -11,6 +11,27 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d express-tuto"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: express-app
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env.development
+    environment:
+      NODE_ENV: "development"
+    ports:
+      - "9999:9999"
+    volumes:
+      # 画像等の永続化
+      - ./storage:/app/storage
 
 volumes:
   postgres_data:

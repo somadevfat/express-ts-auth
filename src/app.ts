@@ -13,7 +13,10 @@ import { itemRoutes } from "./features/item/routes/Item.routes"; // 追加
 import { cartRoutes } from "./features/cart/routes/Cart.route";
 import myUserRoutes from "./features/user/routes/MyUser.routes";
 
-dotenv.config();
+dotenv.config({
+  path: process.env.NODE_ENV === 'production' ? '.env' : '.env.development',
+  override: process.env.NODE_ENV !== 'production',
+});
 
 export const app = express();
 

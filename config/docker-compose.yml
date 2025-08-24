@@ -42,8 +42,8 @@ services:
       MYSQL_PASSWORD: p@ssw0rd
       TZ: 'Asia/Tokyo'
     volumes:
-      - ./mysql/data:/var/lib/mysql
-      - ./mysql/logs:/var/log/mysql
+      - mysql-data:/var/lib/mysql
+      - mysql-logs:/var/log/mysql
 
   # MySQL M1チップ用
 #  mysql_m1:
@@ -58,9 +58,9 @@ services:
 #      MYSQL_USER: api_user
 #      MYSQL_PASSWORD: p@ssw0rd
 #      TZ: 'Asia/Tokyo'
-#    volumes:
-#      - ./mysql_m1/data:/var/lib/mysql
-#      - ./mysql_m1/logs:/var/log/mysql
+#     volumes:
+#       - mysql-data:/var/lib/mysql
+#       - mysql-logs:/var/log/mysql
 
   # mail (hostへのmail送信設定がめんどくさいので、docker上だけでmail送信できるようにする)
   lh_react_mail:
@@ -129,3 +129,6 @@ services:
       watch 'swagger-merger -i /docs/src/index.yml -o /docs/openapi.yml' /docs/src/
     volumes:
       - ./docs:/docs
+volumes:
+  mysql-data:
+  mysql-logs:
