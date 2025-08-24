@@ -4,8 +4,8 @@ import { ItemQueryParams } from "../domain/types/ItemQueryParams";
 
 export type CreateItemDTO = Pick<
   Item,
-  "name" | "content" | "price" | "image"
->;
+  "name" | "content" | "price" 
+> & { image: string };
 export interface ItemRepository {
   findAll(): Promise<Item[]>;
   findById(id: number): Promise<Item | null>;
