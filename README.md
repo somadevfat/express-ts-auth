@@ -10,9 +10,11 @@ Express + TypeScript + Prisma（PostgreSQL）
 docker compose up -d --build
 ```
 
-## 初回（またはスキーマ変更時）
+起動順は自動です（db → migrate → app）。migrate は `docker-compose.yml` の `migrate` サービスで自動実行されます。
+
+## 手動でマイグレーションしたい場合（任意）
 ```
-docker compose exec app npx prisma migrate deploy
+docker compose run --rm app npx prisma migrate deploy
 ```
 
 ## アクセス
