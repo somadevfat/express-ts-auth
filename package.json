@@ -6,9 +6,9 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon",
-    "build": "tsc -p tsconfig.json && swagger-merger -i docs/openapi.yml -o dist/openapi-merged.json",
+    "build": "tsc -p tsconfig.json && npx swagger-merger -i docs/openapi.yml -o dist/openapi-merged.json",
     "start": "node -r tsconfig-paths/register dist/server.js",
-    "docs:build": "swagger-merger -i docs/openapi.yml -o dist/openapi-merged.json"
+    "docs:build": "npx swagger-merger -i docs/openapi.yml -o dist/openapi-merged.json"
   },
   "keywords": [],
   "author": "",
