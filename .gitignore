@@ -32,3 +32,9 @@ coverage/
 # Reference projects (excluded from version control)
 api/
 config/
+__test__/
+
+# ide
+.cursor/
+.windsurf/
+.memory-bank/
