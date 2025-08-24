@@ -94,4 +94,8 @@ export class AuthService {
     const isBlocked = await this.tokenBlocklistRepository.isTokenBlocked(token);
     return isBlocked;
   }
+
+  public async deleteToken(token: string): Promise<void> {
+    await this.tokenBlocklistRepository.deleteToken(token);
+  }
 }
