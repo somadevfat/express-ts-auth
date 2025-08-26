@@ -1,8 +1,0 @@
-minio/data
-minio/config
-docs/server
-mysql/data
-mysql_m1/data
-mysql_testing/data
-*.log
-logs
